@@ -1,0 +1,46 @@
+nginx module based on a basic c lib
+===================================
+
+This is an experiment to build a simple nginx module based on the basic C lib project I wrote to reuse on small experiments. You can find the basic C lib at https://github.com/moret/basic_c_lib . In the same fashion, this project is also full of the old MS "my_this" and "my_that" to make sure you will get mad at it and rename everything.
+
+:: requirements ::
+
+This project needs to install a few gems to run tests. Just run bundle install. Using RVM as usual is recommended.
+
+Of course, you need GCC, make and all the basic C libs. Usually a build-essentials package should be enough.
+
+:: how to use ::
+
+I suppose you too will use it to bootstrap other modules. So you should first clone it, detach it from this repository, rename it as you wish and add it to your own git repo. Something like:
+
+git clone git@github.com:moret/ngx_basic_c_lib_based_module.git
+rm -rf ngx_basic_c_lib_based_module/.git
+mv ngx_basic_c_lib_based_module ngx_cool_module
+git init ngx_cool_module
+
+:: building with nginx crash course ::
+
+If you want to see the module working you will have to compile nginx with it. There are good guides on how to compile it with modules. I recommend you look for them, but don't be scared as they will always boil down to something like this:
+
+- Download and uncompress nginx code
+- Run configure with --add-module pointing to your module
+- Make, make install
+
+Ex.:
+
+./configure --with-ld-opt='-L/usr/local/lib' --with-cc-opt='-I/usr/local/include' --add-module=../ngx_basic_c_lib_based_module --prefix=/home/user/nginx-build
+make -j2
+make install
+sudo /home/user/nginx-build/sbin/nginx
+
+Having your own nginx builder script is recommended. Take a look at https://github.com/moret/nginx-builder-utils .
+
+:: developing ::
+
+Build nginx with the module as shown above. Then link its binary here:
+
+ln -s /home/user/nginx-build/sbin/nginx
+
+And run rspec. After that you're on your own.
+
+Bye!
