@@ -1,3 +1,6 @@
 ngx_addon_name=ngx_basic_c_lib_based_module
+ngx_feature_libs="-lmy_lib"
 HTTP_MODULES="$HTTP_MODULES ngx_basic_c_lib_based_module"
+CORE_INCS="$CORE_INCS $ngx_addon_dir/../basic_c_lib/src $ngx_addon_dir/src"
 NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_basic_c_lib_based_module.c"
+CORE_LIBS="$CORE_LIBS $ngx_feature_libs"

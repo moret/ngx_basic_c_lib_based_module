@@ -1,9 +1,10 @@
+#include <math.h>
+#include <my_lib.h>
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_http.h>
 
 static u_char directive[] = "my_directive";
-static u_char response_body[] = "hello, world";
 static u_char content_type[] = "text/html";
 
 static char *setup(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
@@ -53,10 +54,16 @@ static ngx_int_t handler(ngx_http_request_t *r)
     ngx_buf_t *b;
     ngx_chain_t out;
 
+    int life = my_function();
+    int size = log10(life) + 1;
+
+    u_char response_body[size];
+    ngx_sprintf(response_body, "%d", life);
+
     ngx_http_discard_request_body(r);
 
-    r->headers_out.content_type_len = sizeof(content_type) - 1;
-    r->headers_out.content_type.len = sizeof(content_type) - 1;
+    r->headers_out.content_type_len = ngx_strlen(content_type);
+    r->headers_out.content_type.len = ngx_strlen(content_type);
     r->headers_out.content_type.data = content_type;
 
     b = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
@@ -65,12 +72,12 @@ static ngx_int_t handler(ngx_http_request_t *r)
     out.next = NULL;
 
     b->pos = response_body;
-    b->last = response_body + sizeof(response_body) - 1;
+    b->last = response_body + ngx_strlen(response_body);
     b->memory = 1;
     b->last_buf = 1;
 
     r->headers_out.status = NGX_HTTP_OK;
-    r->headers_out.content_length_n = sizeof(response_body) - 1;
+    r->headers_out.content_length_n = ngx_strlen(response_body);
     ngx_http_send_header(r);
     return ngx_http_output_filter(r, &out);
 }
